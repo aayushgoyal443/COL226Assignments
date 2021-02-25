@@ -2,7 +2,7 @@
 
 exception emptyInputFile;
 exception ImproperDoubleQuotes;
-(* exception  *)
+exception NoNewlineAtEOF
 exception UnevenFields of string;
 
 (* Functions for updating Parameters *)
@@ -29,10 +29,17 @@ fun updatestarting (countquotes, c: string,delim1: string) =
   else if (c = delim1) andalso (countquotes mod 2)=0 then true
   else false;
 
-fun updateinquotes (starting, c: string , inquotes) = 
-   if starting andalso c= "\"" then true
-   else if starting then false
-   else inquotes; 
+fun updateinquotes (countquotes, c: string , inquotes,delim1,ins) = 
+  let 
+    val copt= TextIO.lookahead(ins);
+  in 
+    let val next = case copt of NONE => "" | SOME(copt) => str(copt) in
+   if c = "\n" andalso (countquotes mod 2)=0 andalso next = "\"" then true
+   else if c =delim1 andalso (countquotes mod 2)=0 andalso next = "\"" then true
+   else if c = "\n" andalso (countquotes mod 2)=0 then false
+   else if c = delim1 andalso (countquotes mod 2)=0 then false 
+   else inquotes
+  end end; 
 
 fun updatec(ins) = 
   let val c = TextIO.input1 ins in
@@ -52,12 +59,12 @@ fun checkeven(countcurr, countmain, countrecord) =
 
 fun beforeD(inquotes, outs) = 
   if inquotes then () 
-  else TextIO.output(outs, "\"");
+  else TextIO.output(outs,"\"");
 
 fun afterLF(ins,outs) = 
   case TextIO.lookahead(ins) of
     NONE => ()
-  | SOME(c) => (TextIO.output1(outs,#"\""));
+  | SOME(c) => (TextIO.output(outs,"\""));
   
 fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: string,delim1,delim2,ins,outs) =
 
@@ -77,7 +84,7 @@ fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: st
 
 fun helper(countquotes: int, countcurr: int, countmain: int, countrecord: int, starting: bool, inquotes: bool, c: string, delim1: string, delim2:string,ins,outs) =
   if c= "" then ( TextIO.closeIn ins; TextIO.closeOut outs )
-  else ( printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c,delim1,delim2,ins,outs); helper(updatequotes(countquotes,c),updatecurr(countcurr,c,countquotes,delim1),updatemain(countcurr,countmain,countquotes,c),updaterecord(countquotes,c,countrecord),updatestarting(countquotes,c,delim1),updateinquotes(starting,c,inquotes),updatec(ins),delim1,delim2,ins,outs) );
+  else ( printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c,delim1,delim2,ins,outs); helper(updatequotes(countquotes,c),updatecurr(countcurr,c,countquotes,delim1),updatemain(countcurr,countmain,countquotes,c),updaterecord(countquotes,c,countrecord),updatestarting(countquotes,c,delim1),updateinquotes(countquotes, c,inquotes,delim1,ins),updatec(ins),delim1,delim2,ins,outs) );
 
 
 (* Final function for chaning the delimters *)
@@ -103,8 +110,8 @@ fun convertDelimiters(infilename,delim1,outfilename,delim2) =
 fun csv2tsv(infilename, outfilename) = convertDelimiters(infilename,#",",outfilename,#"\t");
 fun tsv2csv(infilename, outfilename) = convertDelimiters(infilename,#"\t",outfilename,#",");
 
-(* csv2tsv("himym.csv","rahul.txt"); *)
-convertDelimiters("himym.csv",#",","semi.txt",#";");
-(* csv2tsv("empty.csv","rahul.txt"); *)
+(* csv2tsv("himym.csv","rahul.tsv"); *)
+(* convertDelimiters("himym.csv",#",","semi.ssv",#";"); *)
+(* csv2tsv("empty.csv","nothing.txt"); *)
 (* csv2tsv("himym_uneven.csv","rahul.txt"); *)
 (* csv2tsv("gene_alias.csv","khetomp.txt"); *)
