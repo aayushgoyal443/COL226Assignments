@@ -50,6 +50,18 @@ fun updatec(ins) =
 
 (* Other helper functions *)
 
+fun checkEOF(countquotes,ins,c :string) = 
+  let val copt = TextIO.lookahead(ins) in 
+    if (copt = NONE) andalso (c = "\n") andalso countquotes mod 2 =0 then ()
+    else if (copt = NONE) then raise NoNewlineAtEOF
+    else ()
+  end;
+
+(* fun checkescapedquotes(starting,ins,c:string) = 
+  let val copt  = TextIO.lookahead(ins) in 
+    let val next = case copt of NONE => "" | SOME(copt) => str(copt) in 
+      if (starting) *)
+
 fun checkeven(countcurr, countmain, countrecord) = 
   if countmain = ~1 then ()
   else if countmain = countcurr then ()
@@ -68,7 +80,7 @@ fun afterLF(ins,outs) =
   
 fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: string,delim1,delim2,ins,outs) =
 
-  if starting andalso c= "\"" then ()
+  if starting andalso c= "\"" then checkEOF(countquotes,ins,c :string)
   else if ((c) = "\n") andalso (countquotes mod 2)=0 then (
     beforeD(inquotes, outs);
     TextIO.output(outs,"\n");
@@ -80,7 +92,10 @@ fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: st
     TextIO.output(outs,delim2);
     TextIO.output(outs,"\"")
   )
-  else TextIO.output(outs,c);
+  else(
+    TextIO.output(outs,c);
+    checkEOF(countquotes,ins,c :string)
+  )
 
 fun helper(countquotes: int, countcurr: int, countmain: int, countrecord: int, starting: bool, inquotes: bool, c: string, delim1: string, delim2:string,ins,outs) =
   if c= "" then ( TextIO.closeIn ins; TextIO.closeOut outs )
@@ -110,7 +125,8 @@ fun convertDelimiters(infilename,delim1,outfilename,delim2) =
 fun csv2tsv(infilename, outfilename) = convertDelimiters(infilename,#",",outfilename,#"\t");
 fun tsv2csv(infilename, outfilename) = convertDelimiters(infilename,#"\t",outfilename,#",");
 
-(* csv2tsv("himym.csv","rahul.tsv"); *)
+csv2tsv("himym.csv","rahul.tsv");
+(* tsv2csv("rahul.tsv","himym.csv"); *)
 (* convertDelimiters("himym.csv",#",","semi.ssv",#";"); *)
 (* csv2tsv("empty.csv","nothing.txt"); *)
 (* csv2tsv("himym_uneven.csv","rahul.txt"); *)
