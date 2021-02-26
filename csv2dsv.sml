@@ -57,10 +57,17 @@ fun checkEOF(countquotes,ins,c :string) =
     else ()
   end;
 
-(* fun checkescapedquotes(starting,ins,c:string) = 
+fun checkescapedquotes(ins,c:string, inquotes, delim1, countquotes) = 
   let val copt  = TextIO.lookahead(ins) in 
     let val next = case copt of NONE => "" | SOME(copt) => str(copt) in 
-      if (starting) *)
+      if (c= "\"") andalso countquotes mod 2 =0 andalso inquotes  then ()
+      else if (c= "\"") andalso countquotes mod 2 =0 then raise ImproperDoubleQuotes
+      else if (c = "\"") andalso countquotes mod 2 =1 andalso next = "\"" then ()
+      else if (c = "\"") andalso countquotes mod 2 =1 andalso next= "\n"  then ()
+      else if (c = "\"") andalso countquotes mod 2 =1 andalso next = delim1 then ()
+      else if (c = "\"") andalso countquotes mod 2 =1 then raise ImproperDoubleQuotes
+      else ()
+    end end;
 
 fun checkeven(countcurr, countmain, countrecord) = 
   if countmain = ~1 then ()
@@ -80,7 +87,10 @@ fun afterLF(ins,outs) =
   
 fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: string,delim1,delim2,ins,outs) =
 
-  if starting andalso c= "\"" then checkEOF(countquotes,ins,c :string)
+  if starting andalso c= "\"" then (
+    checkEOF(countquotes,ins,c);
+    checkescapedquotes(ins,c, inquotes, delim1, countquotes)
+  )
   else if ((c) = "\n") andalso (countquotes mod 2)=0 then (
     beforeD(inquotes, outs);
     TextIO.output(outs,"\n");
@@ -94,7 +104,8 @@ fun printing(starting,inquotes,countquotes,countcurr,countmain,countrecord,c: st
   )
   else(
     TextIO.output(outs,c);
-    checkEOF(countquotes,ins,c :string)
+    checkEOF(countquotes,ins,c :string);
+    checkescapedquotes(ins,c, inquotes, delim1, countquotes)
   )
 
 fun helper(countquotes: int, countcurr: int, countmain: int, countrecord: int, starting: bool, inquotes: bool, c: string, delim1: string, delim2:string,ins,outs) =
@@ -125,9 +136,9 @@ fun convertDelimiters(infilename,delim1,outfilename,delim2) =
 fun csv2tsv(infilename, outfilename) = convertDelimiters(infilename,#",",outfilename,#"\t");
 fun tsv2csv(infilename, outfilename) = convertDelimiters(infilename,#"\t",outfilename,#",");
 
-csv2tsv("himym.csv","rahul.tsv");
-(* tsv2csv("rahul.tsv","himym.csv"); *)
+(* csv2tsv("himym.csv","rahul.tsv"); *)
+(* tsv2csv("rahul.tsv","himymd.csv"); *)
 (* convertDelimiters("himym.csv",#",","semi.ssv",#";"); *)
 (* csv2tsv("empty.csv","nothing.txt"); *)
-(* csv2tsv("himym_uneven.csv","rahul.txt"); *)
+csv2tsv("himym_uneven.csv","rahul.txt");
 (* csv2tsv("gene_alias.csv","khetomp.txt"); *)
