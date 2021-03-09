@@ -1,3 +1,6 @@
+start = program
+program ::= {statement} EOF .
+statement ::= formula TERM .
 formula ::= IF formula THEN formula ELSE formula
         |   formula IMPLIES formula
         |   formula AND formula | formula OR formula | formula XOR formula | formula EQUALS formula
