@@ -7,9 +7,9 @@ fun lookup "special" = 1000
 %name Bool
 
 %term
-  ID of string | NOT | AND | OR | XOR | EQUALS | IMPLIES | TERM | CONST of string | IF | THEN | ELSE | RPAREN | LPAREN | EOF
+  ID of string | NOT | AND | OR | XOR | EQUALS | IMPLIES | TERM | CONST | IF | THEN | ELSE | RPAREN | LPAREN | EOF
 
-%nonterm formula | program | statement | start
+%nonterm formula | program | statement | expression | term | factor | condition | value | start | binop
 
 %pos int
 
@@ -19,12 +19,6 @@ fun lookup "special" = 1000
 
 (* %header  *)
 
-%right IF THEN ELSE 
-%right IMPLIES
-%left AND OR XOR EQUALS
-%right NOT
-
-  (* %nonassoc*)
 %start start
 
 %verbose
@@ -34,10 +28,10 @@ fun lookup "special" = 1000
 start : program ()
 program : statement program () | ()
 statement : formula TERM ()
-formula : IF formula THEN formula ELSE formula ()
-        |   formula IMPLIES formula ()
-        |   formula AND formula () | formula OR formula () |   formula XOR formula () |   formula EQUALS formula ()
-        |   NOT formula ()
-        |   LPAREN formula RPAREN ()
-        |   CONST ()
-        |   ID ()
+formula : expression () | condition ()
+condition : IF formula THEN formula ELSE formula ()
+expression : term IMPLIES expression () | term IMPLIES condition () | term ()
+term : term binop factor () | term binop condition () | factor ()
+binop : AND () | OR () | XOR () | EQUALS ()
+factor : NOT factor () | NOT condition () | value ()
+value : LPAREN formula RPAREN () | CONST () | ID ()

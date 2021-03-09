@@ -15,23 +15,3 @@ CONST ::= TRUE | FALSE .
 ID ::= alphabet{alphabet} .
 alphabet ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
            | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" .
-
-
-# program ::= {statement} EOF .
-# statement ::= formula TERM .
-# formula ::= IF formula THEN formula ELSE formula
-#         |   formula IMPLIES formula
-#         |   formula BINOP formula
-#         |   NOT formula
-#         |   LPAREN formula RPAREN 
-#         |   CONST 
-#         |   ID .
-
-# TERM ::= ";" .
-# BINOP  ::= AND | OR | XOR | EQUALS .
-# CONST ::= TRUE | FALSE .
-# LPAREN ::= "(" .
-# RPAREN ::= ")" .
-# ID ::= alphabet{alphabet} .
-# alphabet ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
-#            | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" .
