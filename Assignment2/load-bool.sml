@@ -12,12 +12,13 @@ fun invoke lexstream =
 		    BoolParser.parse(0,lexstream,print_error,())
 		end
 
-fun stringToLexer str =
+fun stringToLexer infilename =
+	let val ins = TextIO.openIn infilename in let val str:string = TextIO.inputAll(ins) in
     let val done = ref false
     	val lexer=  BoolParser.makeLexer (fn _ => if (!done) then "" else (done:=true;str))
     in
 	lexer
-    end	
+    end end end 
 		
 fun parse (lexer) =
     let val dummyEOF = BoolLrVals.Tokens.EOF(0,0)

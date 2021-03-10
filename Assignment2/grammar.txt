@@ -1,0 +1,30 @@
+start = program
+program ::= {statement} EOF .
+statement ::= formula TERM .
+formula ::= expression | condition .
+condition ::= IF formula THEN formula ELSE formula .
+expression ::= term IMPLIES expression | term IMPLIES condition | term .
+term ::=  term AND factor | term AND condition
+        | term OR factor | term OR condition
+        | term XOR factor | term XOR condition
+        | term EQUALS factor | term EQUALS condition 
+        | factor .
+factor ::= NOT factor | NOT condition | value .
+value ::= LPAREN formula RPAREN | CONST | ID .
+
+AND ::= "AND" .
+OR ::= "OR" .
+XOR ::= "XOR" .
+EQUALS ::= "EQUALS .
+IF ::= "IF" .
+ELSE ::= "ElSE" .
+THEN ::= "THEN" .
+IMPLIES ::= "IMPLIES" .
+TERM ::= ";" .
+NOT ::= "NOT" .
+LPAREN ::= "(" .
+RPAREN ::= ")" .
+CONST ::= "TRUE" | "FALSE" .
+ID ::= alphabet{alphabet} .
+alphabet ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+           | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" .
