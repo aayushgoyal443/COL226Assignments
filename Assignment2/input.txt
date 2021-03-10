@@ -1,5 +1,5 @@
 IF a THEN b ELSE c;
 TRUE;
 abdjkxslf;
-fnmu8|;
-IF  !TRUE THEN aa6bs ELSE FALSE;
+fnmu;
+IF TRUE THEN aabs ELSE FALSE;

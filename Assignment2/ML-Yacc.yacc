@@ -31,13 +31,13 @@ fun lookup "special" = 1000
 
 %%
 
-start : program ()
-program : statement program () | ()
-statement : formula TERM ()
-formula : IF formula THEN formula ELSE formula ()
-        |   formula IMPLIES formula ()
-        |   formula AND formula () | formula OR formula () |   formula XOR formula () |   formula EQUALS formula ()
-        |   NOT formula ()
-        |   LPAREN formula RPAREN ()
-        |   CONST ()
-        |   ID ()
+start : program (print("start -> program, "))
+program : statement program (print("program -> statement program, ")) | ()
+statement : formula TERM (print("statement -> formula, "))
+formula : IF formula THEN formula ELSE formula (print("formula -> IF formula THEN formula ELSE formula, "))
+        |   formula IMPLIES formula (print("formula -> formula IMPLIES formula, "))
+        |   formula AND formula (print("formula -> formula AND formula, ")) | formula OR formula (print("formula -> formula OR formula, ")) |   formula XOR formula (print("formula -> formula XOR formula, ")) |   formula EQUALS formula (print("formula -> formula EQUALS formula, "))
+        |   NOT formula (print("formula -> NOT formula, "))
+        |   LPAREN formula RPAREN (print("formula -> LPAREN formula RPAREN, "))
+        |   CONST (print("formula -> CONST, "))
+        |   ID (print("formula -> ID, "))
