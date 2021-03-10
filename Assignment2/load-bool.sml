@@ -6,10 +6,10 @@ structure BoolParser =
      	       structure Lex = BoolLex)
      
 fun invoke lexstream =
-    	     	let fun print_error (s,pos:int,_) =
-		    	TextIO.output(TextIO.stdOut, "Error, line " ^ (Int.toString pos) ^ "," ^ s ^ "\n")
+    	     	let fun print_error (s,pos:int,col:int) =
+		    	TextIO.output(TextIO.stdOut, "Syntax Error:" ^ (Int.toString pos) ^ ":" ^ (Int.toString col)^ s ^ "\n")
 		in
-		    BoolParser.parse(0,lexstream,print_error,())
+		     BoolParser.parse(0,lexstream,print_error,())
 		end
 
 fun stringToLexer infilename =
@@ -25,8 +25,8 @@ fun parse (lexer) =
     	val (result, lexer) = invoke lexer
 	val (nextToken, lexer) = BoolParser.Stream.get lexer
     in
-        if BoolParser.sameToken(nextToken, dummyEOF) then result
- 	else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed input \n"); result)
+        ( if BoolParser.sameToken(nextToken, dummyEOF) then result
+ 	else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed input \n"); result ); print("EOF\n"))
     end
 
-val parseString = parse o stringToLexer
+fun parseString (infilename) = parse (stringToLexer infilename) handle UnknownToken => ();

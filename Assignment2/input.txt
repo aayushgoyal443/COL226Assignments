@@ -1,5 +1,1 @@
-IF a THEN b ELSE c;
-TRUE;
-abdjkxslf;
-fnmu;
-IF TRUE THEN aabs ELSE FALSE;
+IF a IMPLIES b THEN b ELSE c;
